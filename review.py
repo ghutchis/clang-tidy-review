@@ -370,6 +370,7 @@ if __name__ == "__main__":
         newbasedir = os.getcwd()
 
         print(f"Replacing '{basedir}' with '{newbasedir}'", flush=True)
+        print("Current directory: ", os.listdir(os.getcwd()))
 
         modified_compile_commands = json.dumps(compile_commands).replace(
             basedir, newbasedir
