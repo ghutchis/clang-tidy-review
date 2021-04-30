@@ -13,6 +13,10 @@ inputs:
     description: 'Directory containing the compile_commands.json file'
     default: '.'
     required: false
+  path_prefix:
+    description: 'Prefix of file paths to substitute'
+    default: ''
+    required: false
   clang_tidy_version:
     description: 'Version of clang-tidy to use; one of 6.0, 7, 8, 9, 10'
     default: '10'
@@ -53,6 +57,7 @@ runs:
     - --repo=${{ inputs.repo }}
     - --pr=${{ inputs.pr }}
     - --build_dir=${{ inputs.build_dir }}
+    - --path_prefix=${{ inputs.path_prefix }}
     - --clang_tidy_checks=${{ inputs.clang_tidy_checks }}
     - --include='${{ inputs.include }}'
     - --exclude='${{ inputs.exclude }}'

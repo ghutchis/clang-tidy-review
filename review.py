@@ -291,6 +291,9 @@ if __name__ == "__main__":
         "--build_dir", help="Directory with compile_commands.json", default="."
     )
     parser.add_argument(
+        "--path_prefix", help="Directory path to remove from filenames", default=""
+    )
+    parser.add_argument(
         "--clang_tidy_checks",
         help="checks argument",
         default="'-*,performance-*,readability-*,bugprone-*,clang-analyzer-*,cppcoreguidelines-*,mpi-*,misc-*'",
@@ -349,18 +352,21 @@ if __name__ == "__main__":
 
         original_directory = compile_commands[0]["directory"]
 
-        # directory should either end with the build directory,
-        # unless it's '.', in which case use all of directory
-        if original_directory.endswith(args.build_dir):
-            build_dir_index = -(len(args.build_dir) + 1)
-        elif args.build_dir == ".":
-            build_dir_index = -1
+        if args.path_prefix:
+            basedir = args.path_prefix
         else:
-            raise RuntimeError(
-                f"compile_commands.json contains absolute paths that I don't know how to deal with: '{original_directory}'"
-            )
+            # directory should either end with the build directory,
+            # unless it's '.', in which case use all of directory
+            if original_directory.endswith(args.build_dir):
+                build_dir_index = -(len(args.build_dir) + 1)
+            elif args.build_dir == ".":
+                build_dir_index = -1
+            basedir = original_directory[:build_dir_index]
+            else:
+                raise RuntimeError(
+                    f"compile_commands.json contains absolute paths that I don't know how to deal with: '{original_directory}'"
+                )
 
-        basedir = original_directory[:build_dir_index]
         newbasedir = os.getcwd()
 
         print(f"Replacing '{basedir}' with '{newbasedir}'", flush=True)
